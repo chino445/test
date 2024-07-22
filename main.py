@@ -33,6 +33,7 @@ try:
         df_position1 = pd.read_excel(excel_file,'position_console')
 #position/code read
     df_position2 = pd.read_excel(excel_file,'position2')
+    df_position2_name = pd.read_excel(excel_file,'position2_name')
     df_code1 = pd.read_excel(excel_file,'code1')
     df_code2 = pd.read_excel(excel_file,'code2')
     df_code3 = pd.read_excel(excel_file,'code3')
@@ -161,16 +162,24 @@ if(errorinput_flag == True):
             position_dec_value   = vc.char_to_decimal(bit_value, 2)
             position_dec_comment = vc.char_to_decimal(bit_comment, 2)
         #index output
-            position2_indexes = df_position2['0x0E'].isin([position_dec_comment])
-            if position_dec_value == 0:
+
+            position2_name_indexes = df_position2_name['value'].isin([position_dec_value])
+            if position2_name_indexes.any() == True:
+                matched_name = df_position2_name.loc[position2_name_indexes, 'significance']
+                name_out = ''.join(matched_name.apply(str))
+   
+                position2_indexes = df_position2['0x0E'].isin([position_dec_comment])
+                if position2_indexes.any() == True:
+                    matched_position2 = df_position2.loc[position2_indexes,position_dec_value]
+                    position2_out = ''.join(matched_position2.apply(str))
+                    if position2_out != 'x':
+                        st.write('故障位置:',name_out + ' — ' + position2_out)
+                else:
+                    st.write('故障位置有误!')
+            elif position_dec_value == 0:
                 st.write(' ')
-            elif position2_indexes.any() == True:
-                matched_position2 = df_position2.loc[position2_indexes,position_dec_value]
-                position2_out = ''.join(matched_position2.apply(str))
-                if position2_out != 'x':
-                    st.write('故障位置:',position2_out)
             else:
-                st.write('故障位置有误!')
+                st.write('故障位置有误!')            
         else:
             st.write(' ')
 

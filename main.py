@@ -185,6 +185,7 @@ if(errorinput_flag == True):
             if code1_indexes.any() == True:
                 if code1_out != 'x':
                     st.write('故障码信息:',code1_out)
+
         elif type_decimal_value == 1:
 
             binary_code_temp = bin(code_decimal_value)[2:]  # 去掉前缀'0b'
@@ -195,17 +196,18 @@ if(errorinput_flag == True):
             code_temp_list = padded_code_list[12:16]
             code_dec_value1 = vc.char_to_decimal(code_temp_list, 2)
 
+            code_temp_list = padded_code_list[0:12]
+            code_dec_value2 = vc.char_to_decimal(code_temp_list, 2)
+ 
             code1_indexes = df_code2['value'].isin([code_dec_value1])
-            if code1_indexes.any() == True:
+            code2_indexes = df_code2['value'].isin([code_dec_value2])
+          
+            if code1_indexes.any() == True and (code2_indexes.any() == True or code_dec_value2 == 0):
                 matched_code1 = df_code2.loc[code1_indexes,1]
                 code1_out = ''.join(matched_code1.apply(str))
                 st.write('故障码信息:',code1_out)
 
-            code_temp_list = padded_code_list[0:12]
-            code_dec_value2 = vc.char_to_decimal(code_temp_list, 2)
-
-            code2_indexes = df_code2['value'].isin([code_dec_value2])
-            if code2_indexes.any() == True:
+            if code2_indexes.any() == True and (code1_indexes.any() == True or code_dec_value1 == 0):
                 matched_code2 = df_code2.loc[code2_indexes,2]
                 code2_out = ''.join(matched_code2.apply(str))
                 st.write('故障码信息:',code2_out)
@@ -216,7 +218,7 @@ if(errorinput_flag == True):
                 padded_code_list = [0] * padding_code_size + binary_position_list
                 index_code_print = [index for index, value in enumerate(padded_code_list) if value == 1]
                 code3_indexes_column = 5 - index_code_print[0] # 5:max len - 1,reversed
-                
+
                 code3_indexes = df_code3['0x06'].isin([code_decimal_value])
                 if code3_indexes.any() == True:
                     matched_code3 = df_code3.loc[code3_indexes,code3_indexes_column]

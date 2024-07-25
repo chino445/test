@@ -48,7 +48,8 @@ errorinput_flag = False
 
 if(option_mode == '查看检索方式'):
     st.write('全段输入：将故障代码直接粘贴至输入框中，注意以英文分号 ";" 结尾')
-    st.write('分段输入：依次输入故障模式、故障类型、故障位置、故障码') 
+    st.write('分段输入：依次输入故障模式、故障类型、故障位置、故障码')
+    st.write('分段输入时，请直接在输入框输入数字，连续快速点击右侧数字加/减可能会导致运行较慢或数据初始化为0')
     st.write('其中，故障代码的组成如下所示')
     image1 = Image.open('errorcode1.png')
     st.image(image1, 
